@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rock Paper Scissors</title>
+    <style>
+        body {
+            text-align: center;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+        }
+        .game-container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            width: 350px;
+            text-align: center;
+        }
+        .choices {
+            display: flex;
+            justify-content: center;
+            margin: 20px;
+        }
+        .choice, .play-again {
+            margin: 10px;
+            padding: 10px;
+            font-size: 18px;
+            cursor: pointer;
+            border: 2px solid black;
+            border-radius: 5px;
+            background: #f9f9f9;
+        }
+        .result {
+            font-size: 20px;
+            margin-top: 15px;
+        }
+        .hands {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 15px;
+        }
+        .hand {
+            font-size: 50px;
+            margin: 0 10px;
+            transition: transform 0.1s ease-in-out;
+        }
+        .expression {
+            font-size: 30px;
+            margin-top: 15px;
+        }
+        .score {
+            font-size: 18px;
+            margin-top: 10px;
+        }
+        .play-again {
+            display: none;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <h1>Rock Paper Scissors</h1>
+        <p>Welcome to Rock Paper Scissors! In this classic game, you will compete against the computer. Choose Rock, Paper, or Scissors and see who wins. Rock beats Scissors, Scissors beats Paper, and Paper beats Rock. Can you outsmart the computer? Let's play!</p>
+        <div class="choices">
+            <button class="choice" onclick="playGame('rock')">Rock</button>
+            <button class="choice" onclick="playGame('paper')">Paper</button>
+            <button class="choice" onclick="playGame('scissors')">Scissors</button>
+        </div>
+        
+        <div class="hands">
+            <span class="hand" id="user-hand">✊</span>
+            <span class="hand" id="computer-hand">✊</span>
+        </div>
+        
+        <p class="result" id="result">Make your move!</p>
+        <p class="expression" id="expression"></p>
+        <p class="score">Your Score: <span id="user-score">0</span> | Computer Score: <span id="computer-score">0</span></p>
+        
+        <button class="play-again" id="play-again" onclick="resetGame()">Play Again</button>
+    </div>
+    
+    <script>
+        let userScore = 0;
+        let computerScore = 0;
+
+        function playGame(userChoice) {
+            const choices = ['rock', 'paper', 'scissors'];
+            const hands = { rock: '✊', paper: '✋', scissors: '✌️' };
+            const expressions = { win: '🎉🌸🎊', lose: '😢💔', draw: '😐' };
+            const computerChoice = choices[Math.floor(Math.random() * choices.length)];
+            
+            let shakeCount = 6;
+            let shakeInterval = setInterval(() => {
+                document.getElementById('user-hand').textContent = hands[choices[Math.floor(Math.random() * 3)]];
+                document.getElementById('computer-hand').textContent = hands[choices[Math.floor(Math.random() * 3)]];
+                shakeCount--;
+                if (shakeCount === 0) {
+                    clearInterval(shakeInterval);
+                    revealResult(userChoice, computerChoice, hands, expressions);
+                }
+            }, 200);
+        }
+
+        function revealResult(userChoice, computerChoice, hands, expressions) {
+            document.getElementById('user-hand').textContent = hands[userChoice];
+            document.getElementById('computer-hand').textContent = hands[computerChoice];
+            
+            document.getElementById('user-hand').style.transform = 'scale(1.2)';
+            document.getElementById('computer-hand').style.transform = 'scale(1.2)';
+            setTimeout(() => {
+                document.getElementById('user-hand').style.transform = 'scale(1)';
+                document.getElementById('computer-hand').style.transform = 'scale(1)';
+            }, 500);
+            
+            let result = '';
+            let expression = '';
+            if (userChoice === computerChoice) {
+                result = "It's a draw!";
+                expression = expressions.draw;
+            } else if (
+                (userChoice === 'rock' && computerChoice === 'scissors') ||
+                (userChoice === 'paper' && computerChoice === 'rock') ||
+                (userChoice === 'scissors' && computerChoice === 'paper')
+            ) {
+                result = "You win!";
+                expression = expressions.win;
+                userScore++;
+            } else {
+                result = "You lose!";
+                expression = expressions.lose;
+                computerScore++;
+            }
+
+            document.getElementById('result').textContent = `You chose ${userChoice}. Computer chose ${computerChoice}. ${result}`;
+            document.getElementById('expression').textContent = expression;
+            document.getElementById('user-score').textContent = userScore;
+            document.getElementById('computer-score').textContent = computerScore;
+            document.getElementById('play-again').style.display = 'block';
+        }
+        
+        function resetGame() {
+            document.getElementById('result').textContent = "Make your move!";
+            document.getElementById('expression').textContent = "";
+            document.getElementById('user-hand').textContent = "✊";
+            document.getElementById('computer-hand').textContent = "✊";
+            document.getElementById('play-again').style.display = 'none';
+        }
+    </script>
+</body>
+</html>
